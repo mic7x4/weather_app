@@ -1,6 +1,6 @@
 // Personal API Key for OpenWeatherMap API
 const BASE_URL = 'http://api.openweathermap.org/data/2.5/weather?';
-const API_KEY = 'b1866fbfe2b86a09784ab17c618d8d3f';
+const API_KEY = '&appid=b1866fbfe2b86a09784ab17c618d8d3f&units=imperial';
 const MY_SERVER_URL = 'http://localhost:8000';
 
 // Event listener to add function to existing HTML DOM element
@@ -22,12 +22,12 @@ function performAction(e) {
 const getWeather = async (zip, feelings) => {
 
   const res =
-    fetch(`${BASE_URL}q=${zip}&appid=${API_KEY}`) 
+    fetch(`${BASE_URL}q=${zip}${API_KEY}`) 
       .then(response => response.json())
       .then(data => {
         const kelvin = data.main.temp;
         const d = new Date();
-        const newDate = d.getMonth() + '.' + d.getDate() + '.' + d.getFullYear();
+        const newDate = d.getMonth() + 1 + '.' + d.getDate() + '.' + d.getFullYear();
         return postData(`${MY_SERVER_URL}/addAllWeatherData`, { 
           date: newDate,
           temperature: kelvin,
