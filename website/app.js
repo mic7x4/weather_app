@@ -21,8 +21,7 @@ function performAction(e) {
 /* Function to GET Project Data */
 const getWeather = async (zip, feelings) => {
 
-  const res =
-    fetch(`${BASE_URL}q=${zip}${API_KEY}`) 
+  const res = await fetch(`${BASE_URL}q=${zip}${API_KEY}`) 
       .then(response => response.json())
       .then(data => {
         const kelvin = data.main.temp;
@@ -34,8 +33,7 @@ const getWeather = async (zip, feelings) => {
           feelings: feelings,
         });
       })
-      .then(() => fetch(`${MY_SERVER_URL}/all`)) 
-      .then(response => response.json())
+      .then(() => getData()) 
       .then(allData => {
           const newData =  allData;
           updateUI(newData);
@@ -45,19 +43,23 @@ const getWeather = async (zip, feelings) => {
 function updateUI(newData){
     content.innerHTML =  newData.feelings;
     newDate.innerHTML =  newData.date;
-    temp.innerHTML = formatTemperature(newData.temperature) + ' degree C';
+    temp.innerHTML = newData.temperature;
 
 }
 
-function formatTemperature(kelvin) {
-  let celcius = kelvin - 273.15;
-  celcius = celcius.toFixed(2);
-  return celcius
+const getData =  async ()=>{
+  const response =  await fetch(`${MY_SERVER_URL}/all`);
+  try {
+      const data = await response.json();
+      return data
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 // POST data
-function postData(url = '', data = {}) {
-  return fetch(url, {
+const postData = async (url = '', data = {})=>{
+  return await fetch(url, {
     method: 'POST',
     credentials: 'same-origin',
     headers: {
